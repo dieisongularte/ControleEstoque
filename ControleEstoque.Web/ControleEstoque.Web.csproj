@@ -217,7 +217,6 @@
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMes.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
-    <Content Include="Views\Cadastro\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
