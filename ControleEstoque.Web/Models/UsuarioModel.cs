@@ -25,7 +25,7 @@ namespace ControleEstoque.Web.Models
                     {
                         cmd.CommandText = @"select count(*) from usuario where login=@login and senha=@senha";
                         cmd.Parameters.Add(new MySqlParameter("login", login));
-                        cmd.Parameters.Add(new MySqlParameter("senha", senha));
+                        cmd.Parameters.Add(new MySqlParameter("senha", CriptoHelper.HashMD5(senha)));
 
                         ret = (Convert.ToInt32(cmd.ExecuteScalar()) > 0);
                     }
