@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Web;
+using System.Configuration;
 
 namespace ControleEstoque.Web.Models
 {
@@ -15,7 +16,7 @@ namespace ControleEstoque.Web.Models
 
             try
             {
-                string ConnectionString = "Server='localhost';User='root';Password='123456';Database='controle_estoque';SslMode=none";
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(ConnectionString))
                 {
                     con.Open();

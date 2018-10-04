@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -23,14 +24,14 @@ namespace ControleEstoque.Web.Models
 
             try
             {
-                string ConnectionString = "Server='localhost';User='root';Password='123456';Database='controle_estoque';SslMode=none";
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(ConnectionString))
                 {
                     con.Open();
 
                     using (MySqlCommand cmd = con.CreateCommand())
                     {
-                        cmd.CommandText = @"select *, rtrim(nome) from grupo_produto order by nome";
+                        cmd.CommandText = @"select *, rtrim(nome) from grupo_produto";
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
@@ -59,7 +60,7 @@ namespace ControleEstoque.Web.Models
 
             try
             {
-                string ConnectionString = "Server='localhost';User='root';Password='123456';Database='controle_estoque';SslMode=none";
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 using (MySqlConnection con = new MySqlConnection(ConnectionString))
                 {
                     con.Open();
@@ -99,14 +100,14 @@ namespace ControleEstoque.Web.Models
             {
                 if (RecuperarPeloId(id) != null)
                 {
-                    string ConnectionString = "Server='localhost';User='root';Password='123456';Database='controle_estoque';SslMode=none";
+                    string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                     using (MySqlConnection con = new MySqlConnection(ConnectionString))
                     {
                         con.Open();
 
                         using (MySqlCommand cmd = con.CreateCommand())
                         {
-                            cmd.CommandText = @"delete * from grupo_produto where id=@id";
+                            cmd.CommandText = @"delete from grupo_produto where id=@id";
                             cmd.Parameters.Add(new MySqlParameter("id", id));
 
                             ret = (cmd.ExecuteNonQuery() > 0);
@@ -128,7 +129,7 @@ namespace ControleEstoque.Web.Models
             try
             {
                 var model = RecuperarPeloId(this.Id);
-                string ConnectionString = "Server='localhost';User='root';Password='123456';Database='controle_estoque';SslMode=none";
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
 
                 using (MySqlConnection con = new MySqlConnection(ConnectionString))
                 {
@@ -137,11 +138,14 @@ namespace ControleEstoque.Web.Models
                     {
                         if (model == null)
                         {
-                            cmd.CommandText = @"insert into grupo_produto (nome, ativo) values(@nome,@ativo); select convert(scope_identity(),int)";
+                            cmd.CommandText = @"insert into grupo_produto (nome, ativo) values(@nome,@ativo);";
                             cmd.Parameters.Add(new MySqlParameter("nome", this.Nome));
                             cmd.Parameters.Add(new MySqlParameter("ativo", this.Ativo));
+                            //cmd.LastInsertedId.ToString();
 
-                            ret = Convert.ToInt32(cmd.ExecuteScalar());
+                            ret = cmd.ExecuteNonQuery();
+                            ret = (int)cmd.LastInsertedId;
+                            //ret = Convert.ToInt32(cmd.ExecuteScalar());
                         }
                         else
                         {
