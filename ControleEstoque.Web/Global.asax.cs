@@ -30,7 +30,15 @@ namespace ControleEstoque.Web
                 Response.Write("{ \"Resultado\":\"AVISO\", \"Mensagens\":[\"Somente texto sem caracteres especiais pode ser enviado.\"], \"IdSalvo\":\"\"}");
                 Response.End();
             }
+            else if (ex is HttpAntiForgeryException)
+            {
+                    Response.Clear();
+                    Response.StatusCode = 200;
+                    //Response.ContentType = "application/json";
+                    //Response.Write("{ \"Resultado\":\"AVISO\", \"Mensagens\":[\"Somente texto sem caracteres especiais pode ser enviado.\"], \"IdSalvo\":\"\"}");
+                    Response.End();
+                    
+            }
         }
-
     }
 }
