@@ -56,21 +56,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr data-id="@item.Id">
-                                <td>@item.Nome</td>
-                                <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
-                                <td>
-                                    <a class="btn btn-primary btn-alterar"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                    <a class="btn btn-danger btn-excluir"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                </td>
-                            </tr>
+                        @{
+                            var linha = 0;
+                            foreach (var item in Model)
+                            {
+                                linha++;
+                                if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+                                {
+                                    <tr data-id="@item.Id">
+                                        <td>@item.Nome</td>
+                                        <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
+                                        <td>
+                                            <a class="btn btn-primary btn-alterar"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                            <a class="btn btn-danger btn-excluir"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
                     </tbody>
                 </table>
             </div>
         </div>
+
+        @if (ViewBag.QuantPaginas > 1)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+                            {
+                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        }
+
     </section>
 
 </div>
@@ -246,7 +275,7 @@
                         $('#msg_aviso').hide();
                         $('#msg_mensagem_aviso').hide();
                         $('#msg_erro').show();
-                    } else if (response.Resultado == "AVISO") {                        
+                    } else if (response.Resultado == "AVISO") {
                         $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
                         $('#msg_aviso').show();
                         $('#msg_mensagem_aviso').show();
