@@ -18,8 +18,36 @@ namespace ControleEstoque.Web.Models
 
         public bool Ativo { get; set; }
 
+        //Recupera quantidade de registros
+        public static int RecuperarQuantidade()
+        {
+            var ret = 0;
 
-        public static List<GrupoProdutoModel> RecuperarLista()
+            try
+            {
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(ConnectionString))
+                {
+                    con.Open();
+
+                    using (MySqlCommand cmd = con.CreateCommand())
+                    {
+
+                        cmd.CommandText = @"select count(*) from grupo_produto";
+
+                        ret = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0}", ex);
+            }
+            return ret;
+        }
+
+
+        public static List<GrupoProdutoModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<GrupoProdutoModel>();
 
@@ -32,7 +60,14 @@ namespace ControleEstoque.Web.Models
 
                     using (MySqlCommand cmd = con.CreateCommand())
                     {
-                        cmd.CommandText = @"select *, rtrim(nome) from grupo_produto";
+
+                        var pos = (pagina - 1) * tamPagina;
+
+                        //cmd.CommandText = string.Format("select * from grupo_produto order by nome limit {0} offset {1}", tamPagina, pos > 0 ? pos - 1 : 0);
+                        cmd.CommandText = @"select * from grupo_produto order by nome limit @limit offset @offset";
+                        cmd.Parameters.Add(new MySqlParameter("limit", tamPagina));
+                        cmd.Parameters.Add(new MySqlParameter("offset", pos));
+
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
