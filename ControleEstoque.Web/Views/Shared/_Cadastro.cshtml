@@ -5,7 +5,7 @@
 
 @model List<ControleEstoque.Web.Models.GrupoProdutoModel>
 @{
-    ViewBag.Title = "Cadastro de Grupo de Produtos";
+    ViewBag.Title = "Grupo de Produtos";
 }
 
 @RenderSection("Styles", true)
@@ -92,5 +92,6 @@
 
 
 @section Scripts{
-@RenderSection("Scripts", true)
+    <script src="~/Scripts/Cadastro/CadBase.js"></script>
+    @RenderSection("Scripts", true)
 }
