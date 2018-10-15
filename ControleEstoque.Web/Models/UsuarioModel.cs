@@ -62,7 +62,36 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista()
+
+        public static int RecuperarQuantidade()
+        {
+            var ret = 0;
+
+            try
+            {
+                string ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                using (MySqlConnection con = new MySqlConnection(ConnectionString))
+                {
+                    con.Open();
+
+                    using (MySqlCommand cmd = con.CreateCommand())
+                    {
+
+                        cmd.CommandText = @"select count(*) from usuario";
+
+                        ret = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0}", ex);
+            }
+            return ret;
+        }
+
+
+        public static List<UsuarioModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<UsuarioModel>();
 
@@ -75,7 +104,12 @@ namespace ControleEstoque.Web.Models
 
                     using (MySqlCommand cmd = con.CreateCommand())
                     {
-                        cmd.CommandText = @"select *, rtrim(nome) from usuario";
+                        var pos = (pagina - 1) * tamPagina;
+
+                        cmd.CommandText = @"select * from usuario order by nome limit @limit offset @offset";
+                        cmd.Parameters.Add(new MySqlParameter("limit", tamPagina));
+                        cmd.Parameters.Add(new MySqlParameter("offset", pos));
+
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
