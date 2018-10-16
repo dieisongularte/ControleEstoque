@@ -20,12 +20,22 @@ namespace ControleEstoque.Web.Controllers
             ViewBag.PaginaAtual = 1;
 
             var lista = GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
+            /*var quant = GrupoProdutoModel.RecuperarQuantidade();
+
+            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;*/
+            CalculaQuantPagina(ViewBag.QuantMaxLinhasPorPagina);
+
+            return View(lista);
+        }
+
+        [Authorize]
+        private void CalculaQuantPagina(int tamPag)
+        {
             var quant = GrupoProdutoModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-
-            return View(lista);
         }
 
 
@@ -34,8 +44,9 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult GrupoProdutoPagina(int pagina, int tamPag)
         {
+            CalculaQuantPagina(tamPag);
             var lista = GrupoProdutoModel.RecuperarLista(pagina, tamPag);
-             
+
             return Json(lista);
         }
 
@@ -95,6 +106,6 @@ namespace ControleEstoque.Web.Controllers
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
-       
+
     }
 }

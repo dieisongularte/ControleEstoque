@@ -161,7 +161,6 @@ $(document).on('click', '#btn_incluir', function () {
                 for (var i = 0; i < response.length; i++) {
                     table.append(criar_linha_grid(response[i]));
                 }
-
                 ddl.siblings().removeClass('active');
                 ddl.addClass('active');
             }
